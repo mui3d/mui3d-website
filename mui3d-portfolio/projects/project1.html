@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blender Geometry node — Mui3D</title>
-  <meta name="description" content="Blender Geometry node — procedural rendering project by Mui3D.">
+  <title>Geometry node — Mui3D</title>
+  <meta name="description" content="Geometry node — Procedural Video Visualizer">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
@@ -38,28 +38,33 @@
     <section class="section project-detail">
       <a href="../portfolio.html" class="btn btn--outline project-detail__back reveal">&larr; Back to Portfolio</a>
 
-      <div class="project-detail__image reveal">
-        <img src="../assets/images/project1.jpg" alt="Blender Geometry node">
-      </div>
+      <div id="project-gallery" class="project-gallery reveal"></div>
 
       <div class="project-detail__content reveal">
-        <p class="project-detail__label">Rendering</p>
-        <h1 class="project-detail__title">Blender Geometry node</h1>
+        <h1 class="project-detail__title">Procedural Video Visualizer</h1>
         <p class="project-detail__desc">
           A procedural environment built entirely with Blender's Geometry Nodes. This project explores
           non-destructive workflows — scattering assets, generating terrain, and driving variation
-          through node-based logic. The final render showcases how procedural systems can produce
-          complex, organic scenes with full parametric control.
+          through node-based logic.
         </p>
         <div class="project-detail__tools">
-          <h3>Tools Used</h3>
+          <h3>Tags</h3>
           <div class="skills">
-            <span class="skill-tag">Blender</span>
-            <span class="skill-tag">Geometry Nodes</span>
-            <span class="skill-tag">Cycles</span>
-            <span class="skill-tag">Shader Editor</span>
+            <span class="skill-tag">Blender Geometry Nodes</span>
+          </div>
+          <div class="skills">
+            <span class="skill-tag">2026</span>
           </div>
         </div>
+
+        <!-- Download Section -->
+        <div class="project-downloads">
+          <a href="https://www.patreon.com/mui3d/posts/img-video-free-148248804?utm_medium=clipboard_copy&utm_source=copyLink&utm_campaign=postshare_creator&utm_content=join_link" class="btn btn--primary">
+            Download Blend File
+          </a>
+        </div>
+        <!-- Download Section -->
+
       </div>
     </section>
   </main>
@@ -77,6 +82,8 @@
     </div>
   </footer>
 
+  <script src="../js/projects/project1-data.js"></script>
+  <script src="../js/project-gallery.js"></script>
   <script src="../js/config.js"></script>
   <script src="../js/main.js"></script>
 </body>
