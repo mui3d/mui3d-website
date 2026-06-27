@@ -85,11 +85,11 @@ img {
   background-clip: text;
   letter-spacing: -0.02em;
 }
-
+/*
 .nav__logo span {
   font-weight: 400;
   opacity: 0.7;
-}
+}*/
 
 .nav__links {
   display: flex;
@@ -894,6 +894,109 @@ a.gallery-item {
   margin-bottom: 1.5rem;
 }
 
+/* ── Store ── */
+
+.store-hero__actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.store-section {
+  padding-top: 2rem;
+}
+
+.store-category-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.store-category {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.store-category__image {
+  background: var(--bg-secondary);
+  overflow: hidden;
+}
+
+.store-category__image {
+  aspect-ratio: 4 / 3;
+}
+
+.store-category__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.store-category:hover .store-category__image img {
+  transform: scale(1.05);
+}
+
+.store-category__body {
+  padding: 1.5rem;
+}
+
+.store-category__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.store-category__body h2 {
+  font-family: var(--font-display);
+  line-height: 1.2;
+}
+
+.store-category__body h2 {
+  font-size: 1.35rem;
+  margin-bottom: 0.75rem;
+}
+
+.store-category__body p,
+.store-panel p {
+  color: var(--text-secondary);
+}
+
+.store-category__body p {
+  flex: 1;
+  margin-bottom: 1.5rem;
+}
+
+.store-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 2.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.store-panel--patreon {
+  background:
+    linear-gradient(135deg, rgba(108, 92, 231, 0.18), rgba(0, 206, 201, 0.08)),
+    var(--bg-card);
+}
+
+.store-panel .section__title {
+  margin-bottom: 0.75rem;
+}
+
+.store-panel__actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
 /* ── Contact ── */
 
 .contact-grid {
@@ -1164,6 +1267,15 @@ a.gallery-item {
     grid-template-columns: 1fr;
   }
 
+  .store-category-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .store-panel {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
   .features {
     grid-template-columns: 1fr;
   }
@@ -1266,6 +1378,23 @@ a.gallery-item {
 
   .youtube-grid {
     grid-template-columns: 1fr;
+  }
+
+  .store-category-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .store-panel {
+    padding: 2rem;
+  }
+
+  .store-panel__actions {
+    width: 100%;
+  }
+
+  .store-panel__actions .btn {
+    flex: 1;
+    justify-content: center;
   }
 
   .footer__inner {
