@@ -1,0 +1,113 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — Mui3D</title>
+  <meta name="description" content="Learn more about Mui3D — 3D artist, visual creator, and educator.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="index.html" class="nav__logo">Mui3D</a>
+    <button class="nav__toggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav__links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="store.html">Store</a></li>
+      <li class="nav__dropdown">
+        <button type="button" class="nav__dropdown-toggle" aria-expanded="false" aria-haspopup="true">
+          Links <span class="nav__dropdown-caret" aria-hidden="true">▼</span>
+        </button>
+        <ul class="nav__dropdown-menu">
+          <li><a href="youtube.html">YouTube</a></li>
+          <li><a href="#" data-contact="instagram">Instagram</a></li>
+          <li><a href="#" data-contact="email">Email</a></li>
+          <li><a href="#" data-contact="whatsapp">WhatsApp</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="page">
+    <header class="page-header">
+      <p class="page-header__label">About</p>
+      <h1 class="page-header__title">Mui3d</h1>
+      <p class="page-header__desc">
+        Designing, making, and sharing creative projects through 3D technology.
+      </p>
+    </header>
+
+    <section class="section">
+      <div class="about-grid">
+        <div class="about__image reveal">
+          
+          <!--<div class="about__image-placeholder">M</div>-->
+
+          <img src="assets/images/yfmui profile.png" alt="Mui3D">
+        </div>
+        <div class="about__text reveal">
+          <!--<h3>Hello, I'm Mui</h3>-->
+          <p>
+            Hello, I'm Fung, creator of Mui3D. I create 3D models, physical prototypes, and creative projects that bridge digital design and real-world making.
+          </p>
+          <p>
+            My work spans precision engineering, symbolic sculptures, creative concepts, DIY builds, and procedural design systems. Through Mui3D, I document the process of designing, prototyping, and bringing ideas into reality.
+          </p>
+          <p>
+            I also share tutorials, workflows, and behind-the-scenes insights to help others explore 3D design, fabrication, and creative problem solving.
+
+          </p>
+          <div class="skills">
+            <span class="skill-tag">Blender</span>
+            <span class="skill-tag">Fusion 360</span>
+            <span class="skill-tag">DIY prototyping</span>
+           <!-- <span class="skill-tag">Substance Painter</span>
+            <span class="skill-tag">Unreal Engine</span>
+            <span class="skill-tag">Marvelous Designer</span>-->
+          </div>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat reveal">
+          <div class="stat__number">300+</div>
+          <div class="stat__label">Projects Completed</div>
+        </div>
+        <div class="stat reveal">
+          <div class="stat__number">5+</div>
+          <div class="stat__label">Years Experience</div>
+        </div>
+        <div class="stat reveal">
+          <div class="stat__number">200,000+</div>
+          <div class="stat__label">Views on Social media</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="hero__actions">
+    <a href="portfolio.html" class="btn btn--primary">Explore My Creations</a>
+    <a href="contact.html" class="btn btn--outline">Get in Touch</a>
+  </div>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">Mui3D</div>
+      <ul class="footer__links">
+        <li><a href="about.html">About</a></li>
+      </ul>
+      <p class="footer__copy">&copy; 2026 Mui3D. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
