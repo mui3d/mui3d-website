@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Space Station Flythrough — Mui3D</title>
+  <meta name="description" content="Space Station Flythrough — 3D animation project by Mui3D.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="../index.html" class="nav__logo">Mui<span>3D</span></a>
+    <button class="nav__toggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav__links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../portfolio.html">Portfolio</a></li>
+      <li><a href="../store.html">Store</a></li>
+      <li class="nav__dropdown">
+        <button type="button" class="nav__dropdown-toggle" aria-expanded="false" aria-haspopup="true">
+          Links <span class="nav__dropdown-caret" aria-hidden="true">▼</span>
+        </button>
+        <ul class="nav__dropdown-menu">
+          <li><a href="../youtube.html">YouTube</a></li>
+          <li><a href="#" data-contact="instagram">Instagram</a></li>
+          <li><a href="#" data-contact="email">Email</a></li>
+          <li><a href="#" data-contact="whatsapp">WhatsApp</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="page">
+    <section class="section project-detail">
+      <a href="../portfolio.html" class="btn btn--outline project-detail__back reveal">&larr; Back to Portfolio</a>
+
+      <div id="project-gallery" class="project-gallery reveal"></div>
+
+      <div class="project-detail__content reveal">
+        <h1 class="project-detail__title">Space Station Flythrough</h1>
+        <p class="project-detail__desc">
+          A cinematic camera flythrough of a modular space station orbiting a distant nebula. The
+          station was built from reusable kitbash modules with emissive window panels and animated
+          docking arms. Camera motion was hand-keyed along a spline path with depth-of-field and
+          volumetric lighting to sell the vastness of deep space.
+        </p>
+        <div class="project-detail__tools">
+          <h3>Tags</h3>
+          <div class="skills">
+            <span class="skill-tag">Blender</span>
+            <span class="skill-tag">Eevee</span>
+            <span class="skill-tag">After Effects</span>
+            <span class="skill-tag">DaVinci Resolve</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">Mui3D</div>
+      <ul class="footer__links">
+        <li><a href="../about.html">About</a></li>
+      </ul>
+      <p class="footer__copy">&copy; 2026 Mui3D. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="../js/projects/project6-data.js"></script>
+  <script src="../js/project-gallery.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/main.js"></script>
+</body>
+</html>
