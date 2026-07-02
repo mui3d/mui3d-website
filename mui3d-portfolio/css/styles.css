@@ -997,6 +997,19 @@ a.gallery-item {
   flex-wrap: wrap;
 }
 
+.store-hidden-product {
+  display: flex;
+  justify-content: center;
+  padding: 0 1.5rem 4rem;
+  opacity: 0.28;
+  transition: opacity var(--transition);
+}
+
+.store-hidden-product:hover,
+.store-hidden-product:focus-within {
+  opacity: 1;
+}
+
 /* ── Contact ── */
 
 .contact-grid {

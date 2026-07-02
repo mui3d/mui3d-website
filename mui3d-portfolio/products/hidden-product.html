@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#08090b">
+  <title>Private Collection | Mui3D</title>
+  <meta name="description" content="Explore the private Mui3D product collection.">
+  <link rel="stylesheet" href="../css/hidden-product.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <header class="private-nav">
+    <a class="private-nav__brand" href="../index.html" aria-label="Mui3D home">Mui3D</a>
+    <a class="private-nav__back" href="../store.html">
+      <span aria-hidden="true">&#8592;</span>
+      Back to Store
+    </a>
+  </header>
+
+  <main class="configurator">
+    <header class="configurator__intro">
+      <p class="configurator__kicker">Private Collection / 01</p>
+      <h1>Hidden Object</h1>
+      <p class="configurator__lead">Five expressions of one form. Select an edition to explore its material, silhouette, and detail.</p>
+    </header>
+
+    <div class="configurator__layout">
+      <aside class="variants" aria-labelledby="variants-title">
+        <div class="variants__heading">
+          <p id="variants-title">Product variants</p>
+          <span id="variant-count">01 / 05</span>
+        </div>
+        <div id="variant-list" class="variants__list" role="group" aria-label="Choose a product variant"></div>
+      </aside>
+
+      <section class="showcase" aria-live="polite">
+        <div id="media-stage" class="showcase__media">
+          <div class="showcase__render-wrap">
+            <img
+              id="product-render"
+              src="../assets/images/products/variant-a-render.webp"
+              alt="Variant A rendered preview"
+              width="1600"
+              height="1200"
+              fetchpriority="high"
+            >
+          </div>
+          <div id="viewer" class="showcase__viewer" aria-label="Interactive 3D product viewer"></div>
+          <div id="viewer-status" class="showcase__status" role="status" aria-live="polite"></div>
+          <span class="showcase__edition" aria-hidden="true">Edition <b id="edition-number">01</b></span>
+        </div>
+
+        <button id="view-3d" class="viewer-toggle" type="button" aria-pressed="false">
+          <span class="viewer-toggle__icon" aria-hidden="true"></span>
+          <span id="viewer-toggle-label">View Interactive 3D</span>
+        </button>
+
+        <div id="product-copy" class="showcase__copy">
+          <div class="showcase__description">
+            <p class="showcase__label">Selected object</p>
+            <h2 id="product-name">Variant A</h2>
+            <p id="product-description">Description for Variant A.</p>
+          </div>
+          <div class="features">
+            <p class="showcase__label">Details</p>
+            <ul id="product-features">
+              <li>Balanced geometric form</li>
+              <li>Studio-grade surface finish</li>
+              <li>Designed and made by Mui3D</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="private-footer">
+    <span>Mui3D / Private Collection</span>
+    <a href="../about.html">About</a>
+  </footer>
+
+  <script type="module" src="../js/hidden-product.js"></script>
+</body>
+</html>
