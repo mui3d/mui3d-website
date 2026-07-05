@@ -473,12 +473,28 @@ button {
     gap: 4rem;
   }
 
+  /* Flatten .showcase so its children (media, toggle, copy) become
+     direct flex items of .configurator__layout, sitting alongside
+     .variants. This lets us set one shared order across all four
+     blocks without touching the desktop grid layout. */
   .showcase {
+    display: contents;
+  }
+
+  .showcase__media {
     order: 1;
   }
 
-  .variants {
+  .viewer-toggle {
     order: 2;
+  }
+
+  .variants {
+    order: 3;
+  }
+
+  .showcase__copy {
+    order: 4;
   }
 
   .showcase__media {
