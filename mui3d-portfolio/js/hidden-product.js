@@ -142,7 +142,7 @@ async function initViewer() {
   scene.background = new THREE.Color(0x0c0e11);
 
   camera = new THREE.PerspectiveCamera(38, 4 / 3, 0.01, 1000);
-  camera.position.set(4.2, 2.8, 600);
+  camera.position.set(4.2, 2.8, 120);
 
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
