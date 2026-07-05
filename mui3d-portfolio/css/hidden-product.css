@@ -418,6 +418,103 @@ button {
   }
 }
 
+@media (max-width: 767px) {
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  .private-nav,
+  .configurator,
+  .configurator__intro,
+  .configurator__layout,
+  .showcase,
+  .showcase__media,
+  .viewer-toggle,
+  .showcase__copy,
+  .variants,
+  .variants__list,
+  .private-footer {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .private-nav {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+
+  .configurator {
+    padding: 3.25rem 1rem 4.5rem;
+  }
+
+  .configurator__intro {
+    margin: 0 0 3rem;
+  }
+
+  .configurator__intro h1 {
+    margin-top: 0.85rem;
+    font-size: clamp(2.75rem, 15vw, 4.5rem);
+    line-height: 0.94;
+  }
+
+  .configurator__lead {
+    margin-top: 1.25rem;
+    font-size: 0.94rem;
+  }
+
+  .configurator__layout {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+  }
+
+  .showcase {
+    order: 1;
+  }
+
+  .variants {
+    order: 2;
+  }
+
+  .showcase__media {
+    aspect-ratio: 4 / 5;
+  }
+
+  .showcase__copy {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    padding-top: 2.75rem;
+  }
+
+  .showcase__description h2 {
+    font-size: clamp(2.25rem, 12vw, 3.5rem);
+  }
+
+  .variants__list {
+    grid-template-columns: 1fr;
+    overflow: visible;
+  }
+
+  .variant-button {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    min-height: 68px;
+    border-right: 0;
+    padding-right: 1rem;
+  }
+
+  .private-footer {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+}
+
 @media (max-width: 640px) {
   .private-nav {
     height: 68px;
