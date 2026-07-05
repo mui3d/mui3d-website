@@ -141,8 +141,8 @@ async function initViewer() {
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0x0c0e11);
 
-  camera = new THREE.PerspectiveCamera(38, 4 / 3, 0.01, 100);
-  camera.position.set(4.2, 2.8, 5.2);
+  camera = new THREE.PerspectiveCamera(38, 4 / 3, 0.01, 1000);
+  camera.position.set(4.2, 2.8, 600);
 
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -155,8 +155,8 @@ async function initViewer() {
   controls.enableDamping = true;
   controls.dampingFactor = 0.06;
   controls.enablePan = true;
-  controls.minDistance = 2;
-  controls.maxDistance = 12;
+  controls.minDistance = 50;
+  controls.maxDistance = 650;
   controls.target.set(0, 0.15, 0);
 
   scene.add(new THREE.HemisphereLight(0xe8f5ff, 0x1b2025, 2.2));
