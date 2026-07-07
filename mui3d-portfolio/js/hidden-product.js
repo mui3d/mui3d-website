@@ -56,7 +56,10 @@ const productName = document.getElementById('product-name');
 const productDescription = document.getElementById('product-description');
 const productFeatures = document.getElementById('product-features');
 
-let selectedIndex = 0;
+// Single source of truth for the active variant. Both the 2D render and
+// the 3D viewer must always read from this value — never from their own
+// locally cached copy of "which variant is showing".
+let currentVariantIndex = 0;
 let viewerOpen = false;
 let scene;
 let camera;
@@ -97,8 +100,17 @@ function updateProductCopy(variant, index) {
 }
 
 function selectVariant(index) {
-  if (index === selectedIndex || !productVariants[index]) return;
-  selectedIndex = index;
+  if (index === currentVariantIndex || !productVariants[index]) return;
+  currentVariantIndex = index;
+  applyCurrentVariant();
+}
+
+// Single point of truth for pushing currentVariantIndex out to both views.
+// This always keeps the 2D render in sync (even while it's hidden behind
+// the 3D viewer) and keeps the GLB in sync whenever the viewer is active,
+// so toggling between 2D/3D can never reveal a stale variant.
+function applyCurrentVariant() {
+  const index = currentVariantIndex;
   const variant = productVariants[index];
 
   variantList.querySelectorAll('.variant-button').forEach((button, buttonIndex) => {
@@ -108,17 +120,29 @@ function selectVariant(index) {
   });
 
   productCopy.classList.add('is-changing');
+
+  const applyRenderSrc = () => {
+    productRender.src = variant.render;
+    productRender.alt = `${variant.name} rendered preview`;
+  };
+
   if (viewerOpen) {
+    // 3D is the visible surface right now: update the model immediately.
+    // Also resync the 2D render in the background (no crossfade needed
+    // since it's hidden) so it's never stale when we switch back.
     updateProductCopy(variant, index);
     window.setTimeout(() => productCopy.classList.remove('is-changing'), 160);
+    applyRenderSrc();
     if (loader) loadModel(variant.model);
     return;
   }
 
+  // 2D is the visible surface right now: crossfade the render, then swap
+  // text + src together. The GLB isn't touched here — entering 3D always
+  // loads whatever currentVariantIndex is at that moment (see openViewer).
   renderWrap.classList.add('is-changing');
   window.setTimeout(() => {
-    productRender.src = variant.render;
-    productRender.alt = `${variant.name} rendered preview`;
+    applyRenderSrc();
     updateProductCopy(variant, index);
     productRender.decode().catch(() => {}).finally(() => {
       renderWrap.classList.remove('is-changing');
@@ -249,7 +273,9 @@ async function openViewer() {
     if (!renderer) await initViewer();
     if (!viewerOpen) return;
     resizeViewer();
-    loadModel(productVariants[selectedIndex].model);
+    // Always load whichever variant is currently selected — this is what
+    // guarantees entering 3D never shows a stale/previous variant.
+    loadModel(productVariants[currentVariantIndex].model);
   } catch (error) {
     setStatus('Interactive viewer could not be loaded');
   } finally {
