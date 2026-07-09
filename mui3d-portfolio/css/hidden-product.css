@@ -83,33 +83,33 @@ button {
 
 .configurator__intro {
   max-width: 940px;
-  margin: 0 0 clamp(4rem, 8vw, 8rem) clamp(220px, 18vw, 310px);
+  margin: 0 0 clamp(3rem, 6vw, 6rem) clamp(220px, 18vw, 310px);
 }
 
 .configurator__kicker,
 .showcase__label,
 .variants__heading {
   color: var(--muted);
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
 .configurator__intro h1 {
-  margin-top: 1.2rem;
+  margin-top: 2rem;
   font-family: var(--display);
-  font-size: clamp(3.4rem, 8vw, 8rem);
+  font-size: clamp(3.4rem, 5vw, 8rem);
   font-weight: 500;
   letter-spacing: 0;
-  line-height: 0.9;
+  line-height: 0.65;
 }
 
 .configurator__lead {
-  max-width: 610px;
-  margin-top: 1.75rem;
+  max-width: 650px;
+  margin-top: .65rem;
   color: var(--muted);
-  font-size: clamp(0.95rem, 1.4vw, 1.12rem);
+  font-size: clamp(0.95rem, 1.5vw, 1.65rem);
 }
 
 .configurator__layout {
