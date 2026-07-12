@@ -78,12 +78,13 @@ button {
 .configurator {
   width: min(1600px, 100%);
   margin: 0 auto;
-  padding: clamp(3.5rem, 7vw, 7.5rem) clamp(1.25rem, 4vw, 4.5rem) clamp(5rem, 8vw, 8rem);
+  padding: clamp(3.5rem, 5vw, 7.5rem) clamp(1.25rem, 4vw, 4.5rem) clamp(5rem, 8vw, 8rem);
 }
 
 .configurator__intro {
   max-width: 940px;
   margin: 0 0 clamp(3rem, 6vw, 6rem) clamp(220px, 18vw, 310px);
+  text-align: center;
 }
 
 .configurator__kicker,
@@ -118,7 +119,7 @@ button {
 .configurator__intro h1 {
   margin-top: 2rem;
   font-family: var(--display);
-  font-size: clamp(3.4rem, 4vw, 8rem);
+  font-size: clamp(3.4rem, 3.5vw, 8rem);
   font-weight: 500;
   letter-spacing: 0;
   line-height: 0.65;
@@ -126,7 +127,7 @@ button {
 
 .configurator__lead {
   max-width: 650px;
-  margin-top: .65rem;
+  margin: .65rem auto 0;
   color: rgba(255,255,255,0.8);
   font-size: clamp(0.95rem, 1.5vw, 1.65rem);
 }
@@ -418,6 +419,7 @@ button {
 
   .variants {
     position: static;
+    transform: translateY(1rem);
   }
 
   .variants__list {
@@ -477,7 +479,7 @@ button {
 
   .configurator__intro h1 {
     margin-top: 0.85rem;
-    font-size: clamp(2.75rem, 12vw, 4.5rem);
+    font-size: clamp(2.75rem, 11vw, 4.5rem);
     line-height: 0.94;
   }
 
@@ -489,7 +491,7 @@ button {
   .configurator__layout {
     display: flex;
     flex-direction: column;
-    gap: 4rem;
+    gap: 0rem;
   }
 
   /* Flatten .showcase so its children (media, toggle, copy) become
@@ -539,7 +541,7 @@ button {
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    min-height: 68px;
+    min-height: 45px;
     border-right: 0;
     padding-right: 1rem;
   }

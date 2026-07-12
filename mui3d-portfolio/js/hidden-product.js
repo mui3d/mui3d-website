@@ -264,7 +264,7 @@ function loadModel(path) {
 async function openViewer() {
   viewerOpen = true;
   viewerToggle.setAttribute('aria-pressed', 'true');
-  viewerToggleLabel.textContent = 'Return to Render';
+  viewerToggleLabel.textContent = 'Return';
   renderWrap.classList.add('is-hidden');
   viewerElement.classList.add('is-active');
   viewerToggle.disabled = true;
