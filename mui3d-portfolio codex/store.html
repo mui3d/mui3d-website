@@ -1,0 +1,132 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Store — Mui3D</title>
+  <meta name="description" content="Digital assets, physical creations, and custom services from Mui3D.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="index.html" class="nav__logo">Mui3D</a>
+    <button class="nav__toggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav__links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="store.html">Store</a></li>
+      <li class="nav__dropdown">
+        <button type="button" class="nav__dropdown-toggle" aria-expanded="false" aria-haspopup="true">
+          Links <span class="nav__dropdown-caret" aria-hidden="true">▼</span>
+        </button>
+        <ul class="nav__dropdown-menu">
+          <li><a href="youtube.html">YouTube</a></li>
+          <li><a href="#" data-contact="instagram">Instagram</a></li>
+          <li><a href="#" data-contact="email">Email</a></li>
+          <li><a href="#" data-contact="whatsapp">WhatsApp</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="page">
+    <header class="page-header">
+      <p class="page-header__label">Creator Marketplace</p>
+      <h1 class="page-header__title">Store</h1>
+      <p class="page-header__desc">
+        Digital assets, physical creations, and custom services from Mui3D.
+      </p>
+      <div class="store-hero__actions">
+        <a href="#store-categories" class="btn btn--primary">Browse Products</a>
+      </div>
+    </header>
+
+    <section id="store-categories" class="section store-section">
+      <div class="store-category-grid">
+        <article class="store-category card reveal">
+          <div class="store-category__image">
+            <img src="assets/images/project1A.jpg" alt="Digital product preview">
+          </div>
+          <div class="store-category__body">
+            <h2>Digital Creations</h2>
+            <p>Blender files, Geometry Nodes assets, STL files, and downloadable resources for makers and creators.</p>
+            <a href="#commissions" class="btn btn--outline">View More</a>
+          </div>
+        </article>
+
+        <article class="store-category card reveal">
+          <div class="store-category__image">
+            <img src="assets/images/projectopmB.png" alt="Physical product preview">
+          </div>
+          <div class="store-category__body">
+            <h2>Physical Creations</h2>
+            <p>3D printed models, sculptures, custom creations, and DIY products built from Mui3D projects.</p>
+            <a href="#commissions" class="btn btn--outline">View More</a>
+          </div>
+        </article>
+
+        <article class="store-category card reveal">
+          <div class="store-category__image">
+            <img src="assets/images/Screenshot 2026-06-18 004619.png" alt="Custom service preview">
+          </div>
+          <div class="store-category__body">
+            <h2>Custom Services</h2>
+            <p>3D modeling, 3D printing, 3D scanning, painting, finishing, and product prototyping support.</p>
+            <a href="#commissions" class="btn btn--outline">View More</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="commissions" class="section store-section">
+      <div class="store-panel reveal">
+        <div>
+          <div class="hero__badge">Available for freelance projects</div>
+
+          <h2 class="section__title">Custom Work & Commissions</h2>
+          <p>
+            Need something unique? I offer custom modeling, printing, scanning, and fabrication services.
+          </p>
+        </div>
+        <div class="store-panel__actions">
+          <a href="contact.html" class="btn btn--primary">Request Quote</a>
+          <a href="contact.html" class="btn btn--outline">Contact Me</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section store-section">
+      <div class="store-panel store-panel--patreon reveal">
+        <div>
+          <h2 class="section__title">Support on Patreon</h2>
+          <p>
+            Get access to exclusive assets, behind-the-scenes content, project files, and tutorials.
+          </p>
+        </div>
+        <div class="store-panel__actions">
+          <a href="https://www.patreon.com/mui3d" target="_blank" rel="noopener noreferrer" class="btn btn--primary">Visit Patreon</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">Mui3D</div>
+      <ul class="footer__links">
+        <li><a href="about.html">About</a></li>
+      </ul>
+      <p class="footer__copy">&copy; 2026 Mui3D. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
