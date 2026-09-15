@@ -210,6 +210,18 @@ button {
   min-width: 0;
 }
 
+.showcase__description,
+.features {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.variant-button:focus-visible,
+.viewer-toggle:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: -3px;
+}
+
 .showcase__media {
   position: relative;
   width: 100%;
@@ -255,6 +267,7 @@ button {
 }
 
 .showcase__viewer.is-active {
+  background: url('../assets/images/products/studio-background.webp') center / cover no-repeat;
   visibility: visible;
   opacity: 1;
 }
@@ -287,6 +300,15 @@ button {
 .showcase__status.is-visible {
   opacity: 1;
   visibility: visible;
+}
+
+.is-coming-soon .showcase__status {
+  background: transparent;
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.65);
 }
 
 .showcase__edition {
@@ -344,10 +366,8 @@ button {
 }
 
 .showcase__copy {
-  display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(220px, 0.7fr);
-  gap: clamp(2rem, 6vw, 6rem);
-  padding-top: clamp(2.5rem, 5vw, 5rem);
+  display: block;
+  padding-top: 2.5rem;
   transition: opacity 220ms ease, transform 220ms ease;
 }
 
@@ -357,12 +377,12 @@ button {
 }
 
 .showcase__description h2 {
-  margin: 0.85rem 0 1.2rem;
+  margin: 0 0 1rem;
   font-family: var(--display);
-  font-size: clamp(2.3rem, 5vw, 5.2rem);
+  font-size: 2.5rem;
   font-weight: 500;
   letter-spacing: 0;
-  line-height: 0.96;
+  line-height: 1.15;
 }
 
 .showcase__description > p:last-child {
@@ -423,7 +443,7 @@ button {
   }
 
   .variants__list {
-    grid-template-columns: repeat(5, minmax(116px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(116px, 1fr));
     overflow-x: auto;
     scrollbar-width: thin;
   }
@@ -512,6 +532,8 @@ button {
 
   .variants {
     order: 3;
+    transform: none;
+    margin-top: 1.5rem;
   }
 
   .showcase__copy {
@@ -529,7 +551,7 @@ button {
   }
 
   .showcase__description h2 {
-    font-size: clamp(2.25rem, 12vw, 3.5rem);
+    font-size: 2rem;
   }
 
   .variants__list {
@@ -541,7 +563,7 @@ button {
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    min-height: 45px;
+    min-height: 56px;
     border-right: 0;
     padding-right: 1rem;
   }

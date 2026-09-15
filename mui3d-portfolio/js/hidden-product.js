@@ -4,42 +4,34 @@ const productVariants = [
     name: 'Variant A',
     render: '../assets/images/products/variant-a-render.webp',
     model: '../assets/models/variant-a.glb',
-    description: 'A restrained sculptural form shaped around balance, clarity, and a precise studio finish.',
-    features: ['Balanced geometric form', 'Studio-grade surface finish', 'Designed and made by Mui3D']
+    description: 'Flowing curves form a layered surface, creating a sense of movement and depth.',
+    features: ['Sculpted curved surface', 'Paired metal bowls', 'Shared center and screw assembly']
   },
   {
     id: 'variant-b',
     name: 'Variant B',
     render: '../assets/images/products/variant-b-render.webp',
     model: '../assets/models/variant-b.glb',
-    description: 'A sharper expression with layered geometry and a stronger sense of mechanical rhythm.',
-    features: ['Layered technical profile', 'High-contrast material treatment', 'Collector-scale presentation']
+    description: 'An irregular Voronoi pattern creates organically shaped openings with a distinctive, unpredictable character.',
+    features: ['Voronoi-inspired openings', 'Irregular openwork pattern', 'Shared center and screw assembly']
   },
   {
     id: 'variant-c',
     name: 'Variant C',
-    render: '../assets/images/products/variant-c-render.webp',
-    model: '../assets/models/variant-c.glb',
-    description: 'An elongated edition that emphasizes motion through its silhouette and directional surfaces.',
-    features: ['Extended dynamic silhouette', 'Directional surface detailing', 'Display-ready proportions']
+    render: '../assets/images/products/variant-c-render.webp?v=90db5eb82e7c',
+    model: '../assets/models/variant-c.glb?v=blender-export-20260915',
+    description: 'Hexagonal openings meet a stepped outer silhouette, creating a bold geometric rhythm of structure and open space.',
+    features: ['Hexagonal openwork', 'Solid bowl roots', 'Shared center and screw assembly']
   },
   {
     id: 'variant-d',
+    comingSoon: true,
     name: 'Variant D',
-    render: '../assets/images/products/variant-d-render.webp',
-    model: '../assets/models/variant-d.glb',
-    description: 'A compact, architectural interpretation designed for a quieter but equally deliberate presence.',
-    features: ['Compact architectural form', 'Refined edge treatment', 'Small-footprint display format']
-  },
-  {
-    id: 'variant-e',
-    name: 'Variant E',
-    render: '../assets/images/products/variant-e-render.webp',
-    model: '../assets/models/variant-e.glb',
-    description: 'The most expressive edition, combining character-led geometry with a dramatic final finish.',
-    features: ['Character-led geometry', 'Premium dramatic finish', 'Limited concept edition']
+    render: '../assets/images/products/studio-background.webp',
+    description: 'A new design is in development.',
+    features: []
   }
-];
+].filter((variant) => variant.available !== false);
 
 const variantList = document.getElementById('variant-list');
 const variantCount = document.getElementById('variant-count');
@@ -54,7 +46,6 @@ const editionNumber = document.getElementById('edition-number');
 const productCopy = document.getElementById('product-copy');
 const productName = document.getElementById('product-name');
 const productDescription = document.getElementById('product-description');
-const productFeatures = document.getElementById('product-features');
 
 // Single source of truth for the active variant. Both the 2D render and
 // the 3D viewer must always read from this value — never from their own
@@ -72,6 +63,14 @@ let loadToken = 0;
 let THREE;
 let GLTFLoader;
 let OrbitControls;
+let renderToken = 0;
+let renderTimer;
+let copyTimer;
+let modelRequest;
+let viewerInit;
+let modeToken = 0;
+let resizeObserver;
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 function createVariantButtons() {
   productVariants.forEach((variant, index) => {
@@ -89,11 +88,6 @@ function createVariantButtons() {
 function updateProductCopy(variant, index) {
   productName.textContent = variant.name;
   productDescription.textContent = variant.description;
-  productFeatures.replaceChildren(...variant.features.map((feature) => {
-    const item = document.createElement('li');
-    item.textContent = feature;
-    return item;
-  }));
   const displayIndex = String(index + 1).padStart(2, '0');
   editionNumber.textContent = displayIndex;
   variantCount.textContent = `${displayIndex} / ${String(productVariants.length).padStart(2, '0')}`;
@@ -109,9 +103,12 @@ function selectVariant(index) {
 // This always keeps the 2D render in sync (even while it's hidden behind
 // the 3D viewer) and keeps the GLB in sync whenever the viewer is active,
 // so toggling between 2D/3D can never reveal a stale variant.
-function applyCurrentVariant() {
+function applyCurrentVariant(animate = true) {
   const index = currentVariantIndex;
   const variant = productVariants[index];
+  viewerToggle.disabled = false;
+  viewerToggleLabel.textContent = viewerOpen ? 'Return to Preview' : 'View Interactive 3D';
+  mediaStage.classList.toggle('is-coming-soon', Boolean(variant.comingSoon));
 
   variantList.querySelectorAll('.variant-button').forEach((button, buttonIndex) => {
     const isActive = buttonIndex === index;
@@ -119,36 +116,53 @@ function applyCurrentVariant() {
     button.setAttribute('aria-pressed', String(isActive));
   });
 
-  productCopy.classList.add('is-changing');
-
-  const applyRenderSrc = () => {
-    productRender.src = variant.render;
-    productRender.alt = `${variant.name} rendered preview`;
-  };
-
+  clearTimeout(copyTimer);
+  updateProductCopy(variant, index);
+  productCopy.classList.toggle('is-changing', animate && !reducedMotion.matches);
+  copyTimer = window.setTimeout(() => productCopy.classList.remove('is-changing'), 160);
+  updateRender(animate && !viewerOpen);
   if (viewerOpen) {
-    // 3D is the visible surface right now: update the model immediately.
-    // Also resync the 2D render in the background (no crossfade needed
-    // since it's hidden) so it's never stale when we switch back.
-    updateProductCopy(variant, index);
-    window.setTimeout(() => productCopy.classList.remove('is-changing'), 160);
-    applyRenderSrc();
-    if (loader) loadModel(variant.model);
-    return;
+    if (variant.comingSoon) {
+      ++modeToken;
+      ++loadToken;
+      modelRequest?.abort();
+      modelRequest = null;
+      unloadModel();
+      mediaStage.setAttribute('aria-busy', 'false');
+      setStatus('Coming Soon');
+      requestRender();
+    } else if (loader) {
+      loadModel(variant.model);
+    } else {
+      openViewer();
+    }
   }
+}
 
-  // 2D is the visible surface right now: crossfade the render, then swap
-  // text + src together. The GLB isn't touched here — entering 3D always
-  // loads whatever currentVariantIndex is at that moment (see openViewer).
-  renderWrap.classList.add('is-changing');
-  window.setTimeout(() => {
-    applyRenderSrc();
-    updateProductCopy(variant, index);
-    productRender.decode().catch(() => {}).finally(() => {
-      renderWrap.classList.remove('is-changing');
-      productCopy.classList.remove('is-changing');
-    });
-  }, 220);
+function updateRender(animate = true) {
+  const token = ++renderToken;
+  const variant = productVariants[currentVariantIndex];
+  clearTimeout(renderTimer);
+  renderWrap.classList.toggle('is-changing', animate && !reducedMotion.matches);
+  if (!viewerOpen) setStatus('');
+  renderTimer = window.setTimeout(async () => {
+    const nextImage = new Image();
+    nextImage.src = variant.render;
+    try {
+      await nextImage.decode();
+      if (token !== renderToken) return;
+      productRender.src = variant.render;
+      productRender.alt = variant.comingSoon ? 'Mui3D empty studio background' : `${variant.name} rendered preview`;
+      if (!viewerOpen) setStatus(variant.comingSoon ? 'Coming Soon' : '');
+    } catch {
+      if (token !== renderToken) return;
+      productRender.removeAttribute('src');
+      productRender.alt = `${variant.name} preview unavailable`;
+      if (!viewerOpen) setStatus(variant.comingSoon ? 'Coming Soon' : 'Preview unavailable. You can still view this model in 3D.');
+    } finally {
+      if (token === renderToken) renderWrap.classList.remove('is-changing');
+    }
+  }, animate && !reducedMotion.matches ? 180 : 0);
 }
 
 async function initViewer() {
@@ -163,12 +177,13 @@ async function initViewer() {
   OrbitControls = controlsModule.OrbitControls;
 
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x0c0e11);
+  scene.background = null;
 
   camera = new THREE.PerspectiveCamera(38, 4 / 3, 0.01, 1000);
   camera.position.set(4.2, 28, 120);
 
-  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
+  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+  renderer.setClearColor(0x000000, 0);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -178,7 +193,7 @@ async function initViewer() {
   controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.06;
-  controls.enablePan = true;
+  controls.enablePan = false;
   controls.minDistance = 80;
   controls.maxDistance = 650;
   controls.target.set(0, 0.15, 0);
@@ -193,41 +208,61 @@ async function initViewer() {
 
   loader = new GLTFLoader();
   resizeViewer();
-  animateViewer();
-  window.addEventListener('resize', resizeViewer);
+  controls.addEventListener('change', requestRender);
+  resizeObserver = new ResizeObserver(resizeViewer);
+  resizeObserver.observe(mediaStage);
 }
 
 function resizeViewer() {
   if (!renderer || !camera) return;
   const { clientWidth, clientHeight } = mediaStage;
+  if (!clientWidth || !clientHeight) return;
   camera.aspect = clientWidth / clientHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(clientWidth, clientHeight, false);
+  requestRender();
 }
 
-function animateViewer() {
-  animationFrame = window.requestAnimationFrame(animateViewer);
-  controls.update();
-  renderer.render(scene, camera);
-}
-
-function disposeMaterial(material) {
-  Object.values(material).forEach((value) => {
-    if (value && value.isTexture) value.dispose();
+function requestRender() {
+  if (animationFrame || !renderer || !viewerOpen || document.hidden) return;
+  animationFrame = window.requestAnimationFrame(() => {
+    animationFrame = null;
+    if (!viewerOpen || document.hidden) return;
+    controls.update();
+    renderer.render(scene, camera);
   });
-  material.dispose();
+}
+
+function disposeModel(root) {
+  const geometries = new Set();
+  const materials = new Set();
+  const textures = new Set();
+  root.traverse((object) => {
+    if (object.geometry) geometries.add(object.geometry);
+    const list = Array.isArray(object.material) ? object.material : [object.material];
+    list.filter(Boolean).forEach((material) => materials.add(material));
+  });
+  materials.forEach((material) => {
+    Object.values(material).forEach((value) => {
+      if (value?.isTexture) textures.add(value);
+    });
+    material.dispose();
+  });
+  const images = new Set();
+  textures.forEach((texture) => {
+    if (texture.image) images.add(texture.image);
+    texture.dispose();
+  });
+  images.forEach((image) => image.close?.());
+  geometries.forEach((geometry) => geometry.dispose());
 }
 
 function unloadModel() {
   if (!activeModel) return;
   scene.remove(activeModel);
-  activeModel.traverse((object) => {
-    if (!object.isMesh) return;
-    object.geometry?.dispose();
-    if (Array.isArray(object.material)) object.material.forEach(disposeMaterial);
-    else if (object.material) disposeMaterial(object.material);
-  });
+  disposeModel(activeModel);
   activeModel = null;
+  requestRender();
 }
 
 function setStatus(message) {
@@ -235,63 +270,100 @@ function setStatus(message) {
   viewerStatus.classList.toggle('is-visible', Boolean(message));
 }
 
-function loadModel(path) {
+async function loadModel(path) {
   const token = ++loadToken;
+  modelRequest?.abort();
+  const request = new AbortController();
+  modelRequest = request;
   unloadModel();
+  mediaStage.setAttribute('aria-busy', 'true');
   setStatus('Loading interactive model');
-
-  loader.load(
-    path,
-    (gltf) => {
-      if (token !== loadToken) {
-        gltf.scene.traverse((object) => object.geometry?.dispose());
-        return;
-      }
-      activeModel = gltf.scene;
-      const bounds = new THREE.Box3().setFromObject(activeModel);
-      const center = bounds.getCenter(new THREE.Vector3());
-      activeModel.position.sub(center);
-      scene.add(activeModel);
-      setStatus('');
-    },
-    undefined,
-    () => {
-      if (token === loadToken) setStatus('Interactive model could not be loaded');
+  try {
+    const url = new URL(path, document.baseURI);
+    const response = await fetch(url, { signal: request.signal });
+    if (!response.ok) throw new Error(`Model request failed: ${response.status}`);
+    const bytes = await response.arrayBuffer();
+    if (token !== loadToken || !viewerOpen) return;
+    const gltf = await loader.parseAsync(bytes, new URL('.', url).href);
+    if (token !== loadToken || !viewerOpen) {
+      gltf.scenes.forEach(disposeModel);
+      return;
     }
-  );
+    activeModel = gltf.scene;
+    const bounds = new THREE.Box3().setFromObject(activeModel);
+    activeModel.position.sub(bounds.getCenter(new THREE.Vector3()));
+    scene.add(activeModel);
+    setStatus('');
+    requestRender();
+  } catch (error) {
+    if (token === loadToken && error.name !== 'AbortError') {
+      setStatus('Model unavailable. Return to the preview and try 3D again.');
+    }
+  } finally {
+    if (token === loadToken) {
+      mediaStage.setAttribute('aria-busy', 'false');
+      modelRequest = null;
+    }
+  }
 }
 
 async function openViewer() {
+  const token = ++modeToken;
   viewerOpen = true;
   viewerToggle.setAttribute('aria-pressed', 'true');
-  viewerToggleLabel.textContent = 'Return';
+  viewerToggleLabel.textContent = 'Return to Preview';
   renderWrap.classList.add('is-hidden');
   viewerElement.classList.add('is-active');
-  viewerToggle.disabled = true;
+  mediaStage.setAttribute('aria-busy', 'true');
+
+  if (productVariants[currentVariantIndex].comingSoon) {
+    mediaStage.setAttribute('aria-busy', 'false');
+    setStatus('Coming Soon');
+    requestRender();
+    return;
+  }
 
   try {
-    if (!renderer) await initViewer();
-    if (!viewerOpen) return;
+    if (!viewerInit) viewerInit = initViewer().catch((error) => {
+      resizeObserver?.disconnect();
+      controls?.dispose();
+      renderer?.dispose();
+      renderer?.domElement.remove();
+      renderer = null;
+      loader = null;
+      viewerInit = null;
+      throw error;
+    });
+    await viewerInit;
+    if (!viewerOpen || token !== modeToken) return;
     resizeViewer();
     // Always load whichever variant is currently selected — this is what
     // guarantees entering 3D never shows a stale/previous variant.
     loadModel(productVariants[currentVariantIndex].model);
   } catch (error) {
-    setStatus('Interactive viewer could not be loaded');
-  } finally {
-    viewerToggle.disabled = false;
+    if (viewerOpen && token === modeToken) {
+      setStatus('3D unavailable. Return to the preview and try again.');
+      mediaStage.setAttribute('aria-busy', 'false');
+    }
   }
 }
 
 function closeViewer() {
   viewerOpen = false;
+  ++modeToken;
   ++loadToken;
+  modelRequest?.abort();
+  modelRequest = null;
+  window.cancelAnimationFrame(animationFrame);
+  animationFrame = null;
   unloadModel();
+  mediaStage.setAttribute('aria-busy', 'false');
   setStatus('');
   viewerToggle.setAttribute('aria-pressed', 'false');
   viewerToggleLabel.textContent = 'View Interactive 3D';
   viewerElement.classList.remove('is-active');
   renderWrap.classList.remove('is-hidden');
+  updateRender(false);
 }
 
 viewerToggle.addEventListener('click', async () => {
@@ -300,8 +372,11 @@ viewerToggle.addEventListener('click', async () => {
 });
 
 document.addEventListener('visibilitychange', () => {
-  if (document.hidden && animationFrame) window.cancelAnimationFrame(animationFrame);
-  else if (!document.hidden && renderer) animateViewer();
+  if (document.hidden) {
+    window.cancelAnimationFrame(animationFrame);
+    animationFrame = null;
+  } else requestRender();
 });
 
 createVariantButtons();
+applyCurrentVariant(false);
