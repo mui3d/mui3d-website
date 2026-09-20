@@ -6,7 +6,8 @@
   <meta name="theme-color" content="#08090b">
   <title>Masterpiece Collection | Mui3D</title>
   <meta name="description" content="Diabolo: A premium collectible metal art keychain by Mui3D.">
-  <link rel="stylesheet" href="../css/hidden-product.css">
+  <link rel="stylesheet" href="../css/hidden-product.css?v=google-auth-1">
+  <link rel="stylesheet" href="../css/wishlist.css?v=count-buttons-1">
 
   <link rel="icon" type="image/png" href="diabolomui_icon.png">
   
@@ -22,10 +23,16 @@
 <body>
   <header class="private-nav">
     <a class="private-nav__brand" href="../index.html" aria-label="Mui3D home">Mui3D</a>
-    <a class="private-nav__back" href="../store.html">
-      <span aria-hidden="true">&#8592;</span>
-      Back to Store
-    </a>
+    <div class="private-nav__actions">
+      <button id="account-trigger" class="private-nav__account" type="button" aria-haspopup="dialog">
+        <span class="private-nav__account-dot" aria-hidden="true"></span>
+        <span id="account-trigger-label">Account / Sign In</span>
+      </button>
+      <a class="private-nav__back" href="../store.html">
+        <span aria-hidden="true">&#8592;</span>
+        Back to Store
+      </a>
+    </div>
   </header>
 
   <main class="configurator">
@@ -44,7 +51,7 @@
         <aside class="variants" aria-labelledby="variants-title">
         <div class="variants__heading">
           <p id="variants-title">Product variants</p>
-          <span id="variant-count">01 / 05</span>
+          <span id="variant-count">01 / 04</span>
         </div>
         <div id="variant-list" class="variants__list" role="group" aria-label="Choose a product variant"></div>
       </aside>
@@ -56,8 +63,8 @@
               id="product-render"
               src="../assets/images/products/variant-a-render.webp"
               alt="Variant A rendered preview"
-              width="1600"
-              height="1200"
+              width="1920"
+              height="1080"
               fetchpriority="high"
             >
           </div>
@@ -75,16 +82,13 @@
 
         <div id="product-copy" class="showcase__copy">
           <div class="showcase__description">
-            <p class="showcase__label">Selected object</p>
             <h2 id="product-name">Variant A</h2>
-            <p id="product-description">Description for Variant A.</p>
+            <p id="product-description">Flowing curves form a layered surface, creating a sense of movement and depth.</p>
           </div>
-          <div class="features">
-            <p class="showcase__label">Details</p>
-            <ul id="product-features">
-              <li>Balanced geometric form</li>
-            </ul>
-          </div>
+        </div>
+        <div class="wishlist-product" data-wishlist-product data-product-id="diabolo" data-product-name="Diabolo" data-product-url="/store/diabolo.html" data-product-image="/assets/images/products/variant-a-render.webp">
+          <button class="wishlist-toggle" type="button" aria-pressed="false" disabled><span data-wishlist-heart aria-hidden="true">&#9825;</span> <span data-wishlist-label>Add to Wishlist</span></button>
+          <p data-wishlist-status class="wishlist-status" role="status" aria-live="polite"></p>
         </div>
       </section>
     </div>
@@ -95,6 +99,73 @@
     <a href="../about.html">About</a>
   </footer>
 
-  <script type="module" src="../js/hidden-product.js"></script>
+  <dialog id="auth-dialog" class="auth-dialog" aria-labelledby="auth-title">
+    <div class="auth-dialog__surface">
+      <button id="auth-close" class="auth-dialog__close" type="button" aria-label="Close account dialog">&#215;</button>
+
+      <section id="auth-form-view">
+        <p class="auth-dialog__kicker">Mui3D Account</p>
+        <h2 id="auth-title">Log in</h2>
+        <p id="auth-intro" class="auth-dialog__intro">Continue to the Mui3D experience.</p>
+
+        <form id="auth-form" class="auth-form" novalidate>
+          <label class="auth-field">
+            <span>Email</span>
+            <input id="auth-email" name="email" type="email" autocomplete="email" required>
+          </label>
+
+          <label class="auth-field" id="auth-password-field">
+            <span>Password</span>
+            <input id="auth-password" name="password" type="password" autocomplete="current-password" required minlength="8">
+          </label>
+
+          <label class="auth-field" id="auth-confirm-field" hidden>
+            <span>Confirm password</span>
+            <input id="auth-confirm-password" name="confirm-password" type="password" autocomplete="new-password" minlength="8">
+          </label>
+
+          <p id="auth-feedback" class="auth-feedback" role="status" aria-live="polite"></p>
+          <button id="auth-resend" class="auth-text-action auth-resend" type="button" hidden>Resend verification email</button>
+          <button id="auth-submit" class="auth-submit" type="submit">Log In</button>
+        </form>
+
+        <button id="auth-forgot" class="auth-text-action" type="button">Forgot password?</button>
+        <div id="auth-google-options">
+          <div class="auth-divider"><span>OR</span></div>
+          <button id="auth-google" class="auth-submit auth-google" type="button">Continue with Google</button>
+        </div>
+        <p id="auth-switch-copy" class="auth-dialog__switch">
+          Don't have an account?
+          <button id="auth-switch" type="button">Create account</button>
+        </p>
+      </section>
+
+      <section id="auth-message-view" class="auth-message" hidden>
+        <p class="auth-dialog__kicker">Mui3D Account</p>
+        <h2 id="auth-message-title">Check your email</h2>
+        <p id="auth-message-copy"></p>
+        <button id="auth-return-login" class="auth-submit" type="button">Return to Login</button>
+      </section>
+
+      <section id="auth-account-view" class="auth-account" hidden>
+        <p class="auth-dialog__kicker">Mui3D Account</p>
+        <h2>Account</h2>
+        <p class="auth-account__label">Signed in as</p>
+        <p id="auth-account-email" class="auth-account__email"></p>
+        <section class="account-wishlist" aria-labelledby="wishlist-title">
+          <h3 id="wishlist-title">My Wishlist</h3>
+          <p id="wishlist-account-status" class="wishlist-status" role="status" aria-live="polite"></p>
+          <ul id="wishlist-items" class="wishlist-items"></ul>
+          <button id="wishlist-retry" class="auth-text-action" type="button" hidden>Retry</button>
+        </section>
+        <p id="auth-account-feedback" class="auth-feedback" role="status" aria-live="polite"></p>
+        <button id="auth-logout" class="auth-submit" type="button">Log Out</button>
+      </section>
+    </div>
+  </dialog>
+
+  <script src="../js/config.js"></script>
+  <script type="module" src="../js/wishlist.js?v=count-buttons-1"></script>
+  <script type="module" src="../js/hidden-product.js?v=variant-wishlist-1"></script>
 </body>
 </html>
