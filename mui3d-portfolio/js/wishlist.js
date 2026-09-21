@@ -18,12 +18,15 @@ function readVariants() {
       ...baseProduct,
       variant_id: button.dataset.variantId,
       variant_name: button.dataset.variantName,
+      variant_status: button.dataset.variantStatus,
       product_image: button.dataset.variantImage,
       product_url: url.pathname + url.search,
     });
     if (!button.parentElement.classList.contains('variant-wishlist-row')) {
       const row = document.createElement('div');
       row.className = 'variant-wishlist-row';
+      row.classList.toggle('is-selected', button.getAttribute('aria-pressed') === 'true');
+      row.classList.toggle('is-coming-soon', button.dataset.variantStatus === 'coming-soon');
       button.before(row);
       row.append(button);
       const count = document.createElement('button');
@@ -31,10 +34,20 @@ function readVariants() {
       count.className = 'variant-wishlist-count';
       count.dataset.wishlistVariant = button.dataset.variantId;
       count.dataset.count = '--';
-      count.textContent = '\u2661 --';
-      count.addEventListener('click', () => toggleVariant(variants.get(button.dataset.variantId)));
+      if (button.dataset.variantStatus === 'coming-soon') {
+        count.classList.add('variant-wishlist-count--future');
+        count.innerHTML = '<span class="variant-wishlist-count__icon" aria-hidden="true">\u2728</span><span class="variant-wishlist-count__label">More Designs, Please!</span><span class="variant-wishlist-count__value">--</span>';
+      } else {
+        count.innerHTML = '<span class="variant-wishlist-count__icon" aria-hidden="true">\u2661</span><span class="variant-wishlist-count__value">--</span>';
+      }
+      count.addEventListener('click', event => {
+        event.stopPropagation();
+        toggleVariant(variants.get(button.dataset.variantId));
+      });
       row.append(count);
     }
+    button.parentElement.classList.toggle('is-selected', button.getAttribute('aria-pressed') === 'true');
+    button.parentElement.classList.toggle('is-coming-soon', button.dataset.variantStatus === 'coming-soon');
     if (button.getAttribute('aria-pressed') === 'true') product = variants.get(button.dataset.variantId);
   });
 }
@@ -44,7 +57,8 @@ function sameVariant(a, b) {
 }
 const toggle = productElement?.querySelector('.wishlist-toggle');
 const label = productElement?.querySelector('[data-wishlist-label]');
-const heart = productElement?.querySelector('[data-wishlist-heart]');
+const interestIcon = productElement?.querySelector('[data-interest-icon]');
+const interestCount = productElement?.querySelector('[data-interest-count]');
 const status = productElement?.querySelector('[data-wishlist-status]');
 const list = document.getElementById('wishlist-items');
 const accountStatus = document.getElementById('wishlist-account-status');
@@ -63,13 +77,34 @@ function renderCountButtons() {
   document.querySelectorAll('.variant-wishlist-count').forEach(button => {
     const target = variants.get(button.dataset.wishlistVariant);
     const saved = Boolean(user && rows.some(row => sameVariant(row, target)));
-    const action = saved ? `Remove ${target.variant_name} from Wishlist` : `Add ${target.variant_name} to Wishlist`;
+    const isFutureInterest = target.variant_status === 'coming-soon';
+    const action = isFutureInterest
+      ? (saved ? 'Withdraw interest in future designs' : 'Show interest in more future designs')
+      : (saved ? `Remove ${target.variant_name} from Wishlist` : `Add ${target.variant_name} to Wishlist`);
     button.disabled = loading || busy;
     button.setAttribute('aria-pressed', String(saved));
-    button.textContent = `${saved ? '\u2665' : '\u2661'} ${button.dataset.count}`;
-    button.setAttribute('aria-label', `${action}. ${button.dataset.count === '--' ? 'Count unavailable' : button.dataset.count + ' users saved this variant'}`);
+    button.querySelector('.variant-wishlist-count__icon').textContent = isFutureInterest
+      ? (saved ? '\u2713' : '\u2728')
+      : (saved ? '\u2665' : '\u2661');
+    const buttonLabel = button.querySelector('.variant-wishlist-count__label');
+    if (buttonLabel) buttonLabel.textContent = saved ? "I'm In" : 'More Designs, Please!';
+    button.querySelector('.variant-wishlist-count__value').textContent = button.dataset.count;
+    const countLabel = button.dataset.count === '--'
+      ? 'Count unavailable'
+      : (isFutureInterest ? `${button.dataset.count} people are interested` : `${button.dataset.count} users saved this variant`);
+    button.setAttribute('aria-label', `${action}. ${countLabel}`);
     button.title = action;
   });
+  if (interestCount && product?.variant_status === 'coming-soon') {
+    interestCount.textContent = selectedCount();
+    const saved = Boolean(user && rows.some(row => sameVariant(row, product)));
+    toggle.setAttribute('aria-label', `${saved ? 'Withdraw interest in future designs' : 'Show interest in more future designs'}. ${selectedCount() === '--' ? 'Count unavailable' : selectedCount() + ' people are interested'}`);
+  }
+}
+
+function selectedCount() {
+  if (!product) return '--';
+  return document.querySelector(`[data-wishlist-variant="${product.variant_id}"]`)?.dataset.count || '--';
 }
 
 async function refreshCounts() {
@@ -125,17 +160,22 @@ function message(text) {
 function render() {
   renderCountButtons();
   const saved = Boolean(user && rows.some(row => sameVariant(row, product)));
+  const isFutureInterest = product?.variant_status === 'coming-soon';
   if (toggle) {
-    toggle.disabled = loading || busy || !product;
+    productElement.hidden = !isFutureInterest;
+    toggle.disabled = loading || busy || !isFutureInterest;
     toggle.setAttribute('aria-pressed', String(saved));
-    label.textContent = busy ? 'Updating...' : saved ? `${product.variant_name} in Wishlist` : `Add ${product?.variant_name || 'variant'} to Wishlist`;
-    heart.textContent = saved ? '\u2665' : '\u2661';
+    label.textContent = busy ? 'Updating...' : saved ? "I'm In" : 'Count Me In';
+    interestIcon.textContent = saved ? '\u2713' : '\u2728';
+    interestCount.textContent = selectedCount();
+    toggle.setAttribute('aria-label', `${saved ? 'Withdraw interest in future designs' : 'Show interest in more future designs'}. ${selectedCount() === '--' ? 'Count unavailable' : selectedCount() + ' people are interested'}`);
   }
   list.replaceChildren();
   if (!user) { accountStatus.textContent = ''; return; }
   if (loading) { accountStatus.textContent = 'Loading wishlist...'; return; }
   if (loaded) accountStatus.textContent = rows.length ? '' : 'Your wishlist is empty.';
   for (const row of rows) {
+    const isFutureInterest = variants.get(row.variant_id)?.variant_status === 'coming-soon';
     const item = document.createElement('li');
     item.className = 'wishlist-item';
     const imagePath = localPath(row.product_image);
@@ -149,10 +189,10 @@ function render() {
     }
     const copy = document.createElement('div');
     const name = document.createElement('h4');
-    name.textContent = row.product_name;
+    name.textContent = isFutureInterest ? 'More Designs, Please!' : row.product_name;
     const variantName = document.createElement('p');
     variantName.className = 'wishlist-item__variant';
-    variantName.textContent = row.variant_name;
+    variantName.textContent = isFutureInterest ? 'Interest in future creative directions' : row.variant_name;
     const actions = document.createElement('div');
     actions.className = 'wishlist-item__actions';
     const path = localPath(row.product_url);
@@ -166,7 +206,7 @@ function render() {
     remove.type = 'button';
     remove.className = 'wishlist-remove';
     remove.textContent = 'Remove';
-    remove.setAttribute('aria-label', `Remove ${row.product_name} ${row.variant_name} from wishlist`);
+    remove.setAttribute('aria-label', isFutureInterest ? 'Withdraw interest in future designs' : `Remove ${row.product_name} ${row.variant_name} from wishlist`);
     remove.disabled = busy;
     remove.addEventListener('click', () => mutate(row, false));
     actions.append(remove);
@@ -216,14 +256,16 @@ async function mutate(target, add) {
   if (!loaded) { await refresh(); return; }
   const token = generation;
   const owner = user.id;
+  const targetStatus = target.variant_status || variants.get(target.variant_id)?.variant_status;
   busy = true;
   render();
   try {
     const client = await getSupabase();
     if (token !== generation) return;
     const query = client.from('wishlists');
+    const { variant_status: _variantStatus, ...databaseRecord } = target;
     const { error } = add
-      ? await query.insert({ ...target, user_id: owner })
+      ? await query.insert({ ...databaseRecord, user_id: owner })
       : await query.delete().eq('user_id', owner).eq('product_id', target.product_id).eq('variant_id', target.variant_id);
     if (token !== generation) return;
     if (error && !(add && error.code === '23505')) throw error;
@@ -231,7 +273,11 @@ async function mutate(target, add) {
     if (!add) rows = rows.filter(row => !sameVariant(row, target));
     busy = false;
     render();
-    if (status) status.textContent = add ? `${target.variant_name} saved to your wishlist.` : `${target.variant_name} removed from your wishlist.`;
+    if (status) {
+      status.textContent = targetStatus === 'coming-soon'
+        ? (add ? 'Thanks! Your interest in more future designs has been counted.' : 'Your future-design interest has been removed.')
+        : (add ? `${target.variant_name} saved to your wishlist.` : `${target.variant_name} removed from your wishlist.`);
+    }
     void refreshCounts();
   } catch {
     if (token !== generation) return;

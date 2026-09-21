@@ -394,6 +394,28 @@ img {
   margin-bottom: 1rem;
 }
 
+.page-header__title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.page-header__title-row .page-header__title {
+  margin-bottom: 0;
+}
+
+.page-header__status {
+  color: var(--accent-light);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
 .page-header__desc {
   color: var(--text-secondary);
   max-width: 560px;

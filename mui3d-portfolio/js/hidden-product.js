@@ -1,6 +1,7 @@
 const productVariants = [
   {
     id: 'variant-a',
+    status: 'available',
     name: 'Variant A',
     render: '../assets/images/products/variant-a-render.webp',
     model: '../assets/models/variant-a.glb',
@@ -9,6 +10,7 @@ const productVariants = [
   },
   {
     id: 'variant-b',
+    status: 'available',
     name: 'Variant B',
     render: '../assets/images/products/variant-b-render.webp',
     model: '../assets/models/variant-b.glb',
@@ -17,6 +19,7 @@ const productVariants = [
   },
   {
     id: 'variant-c',
+    status: 'available',
     name: 'Variant C',
     render: '../assets/images/products/variant-c-render.webp?v=90db5eb82e7c',
     model: '../assets/models/variant-c.glb?v=blender-export-20260915',
@@ -25,7 +28,7 @@ const productVariants = [
   },
   {
     id: 'variant-d',
-    comingSoon: true,
+    status: 'coming-soon',
     name: 'Variant D',
     render: '../assets/images/products/studio-background.webp',
     description: 'A new design is in development.',
@@ -51,7 +54,8 @@ const productDescription = document.getElementById('product-description');
 // the 3D viewer must always read from this value — never from their own
 // locally cached copy of "which variant is showing".
 const initialVariantId = new URLSearchParams(window.location.search).get('variant');
-let currentVariantIndex = Math.max(0, productVariants.findIndex(variant => variant.id === initialVariantId));
+const requestedVariantIndex = productVariants.findIndex(variant => variant.id === initialVariantId);
+let currentVariantIndex = requestedVariantIndex >= 0 ? requestedVariantIndex : 0;
 let viewerOpen = false;
 let scene;
 let camera;
@@ -73,25 +77,44 @@ let modeToken = 0;
 let resizeObserver;
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
+function isVariantAvailable(variant) {
+  return variant?.status === 'available';
+}
+
 function createVariantButtons() {
   productVariants.forEach((variant, index) => {
+    const available = isVariantAvailable(variant);
     const button = document.createElement('button');
     button.type = 'button';
-    button.className = `variant-button${index === 0 ? ' is-active' : ''}`;
+    button.className = `variant-button${index === currentVariantIndex ? ' is-active' : ''}${available ? '' : ' is-coming-soon'}`;
     button.dataset.index = String(index);
     button.dataset.variantId = variant.id;
     button.dataset.variantName = variant.name;
     button.dataset.variantImage = new URL(variant.render, window.location.href).pathname;
-    button.setAttribute('aria-pressed', String(index === 0));
-    button.innerHTML = `<span class="variant-button__number">${String(index + 1).padStart(2, '0')}</span><span>${variant.name}</span>`;
+    button.dataset.variantStatus = variant.status;
+    button.setAttribute('aria-pressed', String(index === currentVariantIndex));
+    button.setAttribute('aria-label', available ? `Select ${variant.name}` : 'Preview upcoming design, coming soon');
+    button.innerHTML = available ? `
+      <span class="variant-button__preview"><img src="${variant.render}" alt="" loading="lazy"></span>
+      <span class="variant-button__copy">
+        <span class="variant-button__meta">Edition ${String(index + 1).padStart(2, '0')}</span>
+        <span class="variant-button__name">${variant.name}</span>
+      </span>` : `
+      <span class="variant-button__copy variant-button__copy--future">
+        <span class="variant-button__status">Coming Soon</span>
+        <span class="variant-button__future-copy">Excited to see what comes next?</span>
+      </span>`;
     button.addEventListener('click', () => selectVariant(index));
     variantList.appendChild(button);
   });
 }
 
 function updateProductCopy(variant, index) {
-  productName.textContent = variant.name;
-  productDescription.textContent = variant.description;
+  const available = isVariantAvailable(variant);
+  productName.hidden = !available;
+  productName.textContent = available ? variant.name : '';
+  productDescription.hidden = !available;
+  productDescription.textContent = available ? variant.description : '';
   const displayIndex = String(index + 1).padStart(2, '0');
   editionNumber.textContent = displayIndex;
   variantCount.textContent = `${displayIndex} / ${String(productVariants.length).padStart(2, '0')}`;
@@ -112,7 +135,7 @@ function applyCurrentVariant(animate = true) {
   const variant = productVariants[index];
   viewerToggle.disabled = false;
   viewerToggleLabel.textContent = viewerOpen ? 'Return to Preview' : 'View Interactive 3D';
-  mediaStage.classList.toggle('is-coming-soon', Boolean(variant.comingSoon));
+  mediaStage.classList.toggle('is-coming-soon', !isVariantAvailable(variant));
 
   variantList.querySelectorAll('.variant-button').forEach((button, buttonIndex) => {
     const isActive = buttonIndex === index;
@@ -127,7 +150,7 @@ function applyCurrentVariant(animate = true) {
   copyTimer = window.setTimeout(() => productCopy.classList.remove('is-changing'), 160);
   updateRender(animate && !viewerOpen);
   if (viewerOpen) {
-    if (variant.comingSoon) {
+    if (!isVariantAvailable(variant)) {
       ++modeToken;
       ++loadToken;
       modelRequest?.abort();
@@ -157,13 +180,13 @@ function updateRender(animate = true) {
       await nextImage.decode();
       if (token !== renderToken) return;
       productRender.src = variant.render;
-      productRender.alt = variant.comingSoon ? 'Mui3D empty studio background' : `${variant.name} rendered preview`;
-      if (!viewerOpen) setStatus(variant.comingSoon ? 'Coming Soon' : '');
+      productRender.alt = isVariantAvailable(variant) ? `${variant.name} rendered preview` : 'Mui3D empty studio background';
+      if (!viewerOpen) setStatus(isVariantAvailable(variant) ? '' : 'Coming Soon');
     } catch {
       if (token !== renderToken) return;
       productRender.removeAttribute('src');
       productRender.alt = `${variant.name} preview unavailable`;
-      if (!viewerOpen) setStatus(variant.comingSoon ? 'Coming Soon' : 'Preview unavailable. You can still view this model in 3D.');
+      if (!viewerOpen) setStatus(isVariantAvailable(variant) ? 'Preview unavailable. You can still view this model in 3D.' : 'Coming Soon');
     } finally {
       if (token === renderToken) renderWrap.classList.remove('is-changing');
     }
@@ -321,7 +344,7 @@ async function openViewer() {
   viewerElement.classList.add('is-active');
   mediaStage.setAttribute('aria-busy', 'true');
 
-  if (productVariants[currentVariantIndex].comingSoon) {
+  if (!isVariantAvailable(productVariants[currentVariantIndex])) {
     mediaStage.setAttribute('aria-busy', 'false');
     setStatus('Coming Soon');
     requestRender();

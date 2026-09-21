@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#08090b">
   <title>Masterpiece Collection | Mui3D</title>
   <meta name="description" content="Diabolo: A premium collectible metal art keychain by Mui3D.">
-  <link rel="stylesheet" href="../css/hidden-product.css?v=google-auth-1">
-  <link rel="stylesheet" href="../css/wishlist.css?v=count-buttons-1">
+  <link rel="stylesheet" href="../css/hidden-product.css?v=coming-soon-card-1">
+  <link rel="stylesheet" href="../css/wishlist.css?v=coming-soon-card-1">
 
   <link rel="icon" type="image/png" href="diabolomui_icon.png">
   
@@ -28,10 +28,6 @@
         <span class="private-nav__account-dot" aria-hidden="true"></span>
         <span id="account-trigger-label">Account / Sign In</span>
       </button>
-      <a class="private-nav__back" href="../store.html">
-        <span aria-hidden="true">&#8592;</span>
-        Back to Store
-      </a>
     </div>
   </header>
 
@@ -86,12 +82,16 @@
             <p id="product-description">Flowing curves form a layered surface, creating a sense of movement and depth.</p>
           </div>
         </div>
-        <div class="wishlist-product" data-wishlist-product data-product-id="diabolo" data-product-name="Diabolo" data-product-url="/store/diabolo.html" data-product-image="/assets/images/products/variant-a-render.webp">
-          <button class="wishlist-toggle" type="button" aria-pressed="false" disabled><span data-wishlist-heart aria-hidden="true">&#9825;</span> <span data-wishlist-label>Add to Wishlist</span></button>
-          <p data-wishlist-status class="wishlist-status" role="status" aria-live="polite"></p>
-        </div>
+        <div data-wishlist-product data-product-id="diabolo" data-product-name="Diabolo" data-product-url="/store/diabolo.html" data-product-image="/assets/images/products/variant-a-render.webp" hidden></div>
       </section>
     </div>
+
+    <nav class="product-exit-nav" aria-label="Store navigation">
+      <a class="product-exit-nav__link" href="../store.html">
+        Back to Store
+        <span class="product-exit-nav__arrow" aria-hidden="true">&#8594;</span>
+      </a>
+    </nav>
   </main>
 
   <footer class="private-footer">
@@ -165,7 +165,7 @@
   </dialog>
 
   <script src="../js/config.js"></script>
-  <script type="module" src="../js/wishlist.js?v=count-buttons-1"></script>
-  <script type="module" src="../js/hidden-product.js?v=variant-wishlist-1"></script>
+  <script type="module" src="../js/wishlist.js?v=coming-soon-card-3"></script>
+  <script type="module" src="../js/hidden-product.js?v=coming-soon-card-3"></script>
 </body>
 </html>
